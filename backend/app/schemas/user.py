@@ -26,7 +26,7 @@ class UserInDB(UserBase):
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class User(UserInDB):
