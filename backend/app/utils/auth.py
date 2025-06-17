@@ -1,36 +1,28 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+import jwt
+import hashlib
+import os
 from fastapi import HTTPException, status
 from ..config import settings
 
-# Password hashing with Argon2 (no Rust compilation needed)
-pwd_context = CryptContext(
-    schemes=["argon2"], 
-    deprecated="auto"
-)
+# Simple password hashing using SHA256 + salt (no external dependencies)
+def get_password_hash(password: str) -> str:
+    """Hash a password using SHA256 + salt"""
+    salt = os.urandom(32).hex()
+    hash_obj = hashlib.sha256((password + salt).encode())
+    return f"{salt}${hash_obj.hexdigest()}"
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
     try:
-        return pwd_context.verify(plain_password, hashed_password)
+        salt, hash_value = hashed_password.split('$')
+        hash_obj = hashlib.sha256((plain_password + salt).encode())
+        return hash_obj.hexdigest() == hash_value
     except Exception as e:
         print(f"Password verification error: {e}")
         return False
-
-
-def get_password_hash(password: str) -> str:
-    """Hash a password"""
-    try:
-        return pwd_context.hash(password)
-    except Exception as e:
-        print(f"Password hashing error: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error hashing password"
-        )
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -54,7 +46,7 @@ def verify_token(token: str, credentials_exception):
         if email is None:
             raise credentials_exception
         return email
-    except JWTError:
+    except jwt.PyJWTError:
         raise credentials_exception
 
 
