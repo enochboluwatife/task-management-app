@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: task-management-backend
+    env: python
+    pythonVersion: "3.11"
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn wsgi:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////opt/render/project/src/backend/task_management.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+      - key: ENVIRONMENT
+        value: production 
