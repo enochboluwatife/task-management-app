@@ -7,7 +7,7 @@ load_dotenv()
 
 class Settings:
     # Database
-    database_url: str = config("DATABASE_URL", default="sqlite:///./task_management.db")
+    database_url: str = config("DATABASE_URL", default="sqlite:///./backend/task_management.db")
     
     # JWT
     secret_key: str = config("SECRET_KEY", default="your-secret-key-here-change-in-production")

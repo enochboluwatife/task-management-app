@@ -3,6 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, tasks
 from .database import create_tables
 from .config import settings
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
@@ -27,7 +32,13 @@ app.include_router(tasks.router)
 @app.on_event("startup")
 async def startup_event():
     """Create database tables on startup."""
-    create_tables()
+    try:
+        logger.info("Creating database tables...")
+        create_tables()
+        logger.info("Database tables created successfully!")
+    except Exception as e:
+        logger.error(f"Warning: Could not create database tables: {e}")
+        # Don't raise the exception to allow the app to start
 
 @app.get("/")
 async def root():

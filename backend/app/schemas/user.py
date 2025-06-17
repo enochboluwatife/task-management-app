@@ -1,32 +1,31 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from datetime import datetime
 from typing import Optional
 from ..models.user import UserRole
 
 
 class UserBase(BaseModel):
-    email: EmailStr
-    username: str
+    email: EmailStr = Field(..., description="User email address")
+    username: str = Field(..., min_length=3, max_length=50, description="Username")
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=6, description="User password")
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    username: Optional[str] = None
-    password: Optional[str] = None
+    email: Optional[EmailStr] = Field(None, description="User email address")
+    username: Optional[str] = Field(None, min_length=3, max_length=50, description="Username")
+    password: Optional[str] = Field(None, min_length=6, description="User password")
 
 
 class UserInDB(UserBase):
-    id: int
-    role: UserRole
-    created_at: datetime
-    updated_at: Optional[datetime] = None
+    id: int = Field(..., description="User ID")
+    role: UserRole = Field(..., description="User role")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class User(UserInDB):
@@ -34,14 +33,14 @@ class User(UserInDB):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+    email: EmailStr = Field(..., description="User email address")
+    password: str = Field(..., description="User password")
 
 
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+    access_token: str = Field(..., description="JWT access token")
+    token_type: str = Field(..., description="Token type")
 
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    email: Optional[str] = Field(None, description="User email from token")

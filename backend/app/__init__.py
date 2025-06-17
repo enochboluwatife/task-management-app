@@ -1,1 +1,2 @@
-# Task Management App Backend 
+# Task Management App Backend
+from .main import app 
