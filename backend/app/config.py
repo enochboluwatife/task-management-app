@@ -1,26 +1,23 @@
-from pydantic_settings import BaseSettings
+from decouple import config
 from typing import List
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-class Settings(BaseSettings):
+class Settings:
     # Database
-    database_url: str = os.getenv("DATABASE_URL", "sqlite:///./task_management.db")
+    database_url: str = config("DATABASE_URL", default="sqlite:///./task_management.db")
     
     # JWT
-    secret_key: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
-    algorithm: str = os.getenv("ALGORITHM", "HS256")
-    access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+    secret_key: str = config("SECRET_KEY", default="your-secret-key-here-change-in-production")
+    algorithm: str = config("ALGORITHM", default="HS256")
+    access_token_expire_minutes: int = config("ACCESS_TOKEN_EXPIRE_MINUTES", default=30, cast=int)
     
     # CORS
-    allowed_origins: List[str] = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001").split(",")
+    allowed_origins: List[str] = config("ALLOWED_ORIGINS", default="http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001").split(",")
     
     # Environment
-    environment: str = os.getenv("ENVIRONMENT", "development")
-    
-    class Config:
-        env_file = ".env"
+    environment: str = config("ENVIRONMENT", default="development")
 
 settings = Settings() 
