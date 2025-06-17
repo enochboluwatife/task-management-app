@@ -6,7 +6,7 @@ backend_path = os.path.join(os.path.dirname(__file__), 'backend')
 sys.path.insert(0, backend_path)
 
 try:
-    from app.main import app
+    from backend.app.main import app
 except ImportError as e:
     print(f"Error importing app: {e}")
     print(f"Current working directory: {os.getcwd()}")
