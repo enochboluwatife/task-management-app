@@ -31,11 +31,8 @@ After deployment, note your backend URL: `https://your-backend-name.onrender.com
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Click "New Project"
 3. Import your GitHub repository
-4. Configure the project:
-   - **Framework Preset**: Create React App
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `build`
+4. **Important**: The `vercel.json` file is already configured to handle the monorepo structure
+5. Vercel will automatically detect the configuration and build from the frontend directory
 
 ### Step 2: Environment Variables
 Add this environment variable in Vercel:
@@ -56,7 +53,21 @@ After getting your Vercel frontend URL, update the `ALLOWED_ORIGINS` in Render t
 4. Test all CRUD operations
 
 ## Troubleshooting
+
+### Vercel Build Errors
+- **"react-scripts: command not found"**: The `vercel.json` file should fix this by running commands from the frontend directory
+- **"pip as root user"**: This is just a warning and won't affect the build
+- **Build fails**: Check that all dependencies are in `frontend/package.json`
+
+### CORS Issues
 - If CORS errors occur, check `ALLOWED_ORIGINS` in Render
+- Make sure your Vercel domain is included in the origins list
+
+### API Connection Issues
 - If API calls fail, verify `REACT_APP_API_BASE_URL` in Vercel
+- Check that the backend URL is correct and accessible
+
+### General Debugging
 - Check Render logs for backend issues
-- Check Vercel logs for frontend issues 
+- Check Vercel logs for frontend issues
+- Ensure environment variables are set correctly on both platforms 
