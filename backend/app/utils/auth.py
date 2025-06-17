@@ -5,11 +5,10 @@ from passlib.context import CryptContext
 from fastapi import HTTPException, status
 from ..config import settings
 
-# Password hashing with explicit bcrypt configuration
+# Password hashing with Argon2 (no Rust compilation needed)
 pwd_context = CryptContext(
-    schemes=["bcrypt"], 
-    deprecated="auto",
-    bcrypt__rounds=12
+    schemes=["argon2"], 
+    deprecated="auto"
 )
 
 
